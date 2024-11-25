@@ -1,0 +1,44 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <link rel="stylesheet" href="{% static 'style.css' %}">
+    <title>Find Faces</title>
+</head>
+<body>
+    <div class="container">
+    
+        <div class="upload-section">
+            <h2>Завантаження</h2>
+            <form method="post" action="{% url 'main' %}" enctype="multipart/form-data">
+                {% csrf_token %}
+                <div id="image-inputs">
+                    <label for="image1">Завантажте 4 зображення</label>
+                    <input type="file" name="image" accept="image/*" required>
+                    <input type="file" name="image" accept="image/*" required>
+                    <input type="file" name="image" accept="image/*" required>
+                    <input type="file" name="image" accept="image/*" required>
+                </div>
+                <button type="submit">Почати</button>
+            </form>
+        </div>
+        <div class="camera">
+            <h2>Камера</h2>
+            {% if known_face_encodings %}
+                <img id="video-stream" src="{% url 'video_feed' %}" alt="Video Stream">
+            {% else %}
+                <p>Завантажте зображення щоб знайти людину</p>
+            {% endif %}
+        </div>
+    </div>    
+    <script>
+    window.addEventListener('beforeunload', (event) => {
+        fetch("{% url 'clear_session' %}", { method: "GET" });
+        event.returnValue = ''; 
+    });
+    </script>
+</body>
+</html>
